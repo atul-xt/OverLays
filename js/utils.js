@@ -1,0 +1,506 @@
+let bagItems;
+let bagItemObjects;
+onLoad();
+
+function onLoad() {
+    let bagItemsStr = localStorage.getItem('bagItems');
+    bagItems = bagItemsStr ? JSON.parse(bagItemsStr) : [];
+    loadBagItemsObjects()
+    displayBagItems();
+    displayBagSummary();
+    displayBagIcon();
+    displayDeliveryItems();
+    displayDeliveryDetails();
+    msgPopup();
+    cartPopup();
+    searchPopup();
+    popUpNavBar();
+    displayShopAll();
+    displayBottoms();
+    displayCropTop();
+    displayEssential();
+    displayMen();
+    displayPoloShirt();
+    displayRichCotton();
+    displayShirt();
+    displaySweatshirt();
+    displayTshirt();
+    displayWomen();
+}
+
+function displayBagSummary() {
+    const bagSummaryElement = document.querySelector(".checkout");
+    let totalMRP = 0;
+
+    if (!bagSummaryElement) {
+        return;
+    }
+
+    bagItemObjects.forEach(bagItem => {
+        totalMRP += bagItem.price;
+    })
+
+    bagSummaryElement.innerHTML = `
+        <p>Shipping & taxes calculated at checkout</p>
+        <a href="delivery.html"><button>Checkout ∎ ₹ ${totalMRP}</button></a>`
+}
+
+function displayDeliveryDetails() {
+    const total = document.querySelector('.total');
+    let totalMRP = 0;
+
+    if (!total) {
+        return;
+    }
+
+    bagItemObjects.forEach(bagItem => {
+        totalMRP += bagItem.price;
+    })
+
+    total.innerHTML = `
+    <div>
+        <span>Subtotal</span>
+        <span>₹${totalMRP}.00</span>
+        </div>
+    <div>
+        <span>Shipping</span>
+        <span>To be calculated</span>
+    </div>
+    <div class="final-amount">
+        <span>Total</span>
+        <span>₹${totalMRP}.00</span>
+    </div>`
+}
+
+function loadBagItemsObjects() {
+    bagItemObjects = bagItems.map(itemId => {
+        for (let i = 0; i < items.length; i++) {
+            if (itemId == items[i].id) {
+                return items[i];
+            }
+        }
+    });
+}
+
+function addToBag(itemId) {
+    bagItems.push(itemId);
+    localStorage.setItem("bagItems", JSON.stringify(bagItems));
+    displayBagIcon();
+}
+
+function displayBagIcon() {
+    const bagItemCountElement = document.querySelector('.bag-item-count');
+    const cartDetails = document.querySelector('.cart-details');
+    const checkout = document.querySelector('.checkout');
+    
+    if(!cartDetails){
+        return;
+    }
+    if (!bagItemCountElement) {
+        return;
+    }
+    if (bagItems.length > 0) {
+        bagItemCountElement.style.visibility = "visible";
+        bagItemCountElement.innerText = bagItems.length;
+    } else {
+        checkout.style.visibility = "hidden";
+        bagItemCountElement.style.visibility = "hidden";
+        cartDetails.style.display = "block";
+    }
+}
+
+function displayBagItems() {
+    const containerElement = document.querySelector(".cart-items");
+
+    if (!containerElement) {
+        return;
+    }
+
+    let innerHTML = '';
+    bagItemObjects.forEach(bagItem => {
+        innerHTML += generateItemHTML(bagItem);
+    })
+    containerElement.innerHTML = innerHTML;
+}
+
+function displayDeliveryItems() {
+    const Container = document.querySelector('.items');
+    if (!Container) {
+        return;
+    }
+    let innerHTML = '';
+    bagItemObjects.forEach(item => {
+        innerHTML += `
+        <div class="item">
+            <img src="${item.item_img}" alt="">
+            <div>
+                <h4>${item.item_name}</h4>
+                <p>Price: ₹${item.price}.00</p>
+            </div>
+        </div>`
+    });
+    Container.innerHTML = innerHTML;
+}
+
+function removeFromBag(itemId) {
+    bagItems = bagItems.filter(bagItemId => bagItemId != itemId)
+    localStorage.setItem("bagItems", JSON.stringify(bagItems));
+    loadBagItemsObjects();
+    displayBagIcon();
+    displayBagItems();
+    displayBagSummary();
+}
+
+function generateItemHTML(item) {
+    return `
+    <div class="cart-item">
+        <img src="${item.item_img}" alt="">
+        <div class="cart-heading">
+            <h4>${item.item_name}</h4>
+            <h4>₹ ${item.price}</h4>
+        </div>
+        <img onclick="removeFromBag(${item.id})" id="close" src="./media/close.png" alt="">
+    </div>`
+}
+
+function msgPopup() {
+    const msg = document.querySelector("#msg");
+    const close = document.querySelector("#message-popup-close");
+
+    if (!msg) {
+        return;
+    }
+
+    msg.addEventListener("click", function () {
+        document.querySelector(".gray-bg").style.display = "block";
+        document.querySelector(".message-popup").style.display = "block";
+    })
+
+    close.addEventListener("click", function () {
+        document.querySelector(".gray-bg").style.display = "none";
+        document.querySelector(".message-popup").style.display = "none";
+    })
+}
+
+function cartPopup() {
+    const cart = document.getElementById("cart");
+    const close = document.getElementById("cart-popup-close");
+    const bg = document.querySelector(".light-bg");
+
+    if (!cart) {
+        return;
+    }
+
+    cart.addEventListener("click", function () {
+        bg.style.display = "block";
+        document.querySelector("body").style.overflow = "hidden";
+    })
+
+    close.addEventListener("click", function () {
+        bg.style.display = "none";
+        document.querySelector("body").style.overflow = "auto";
+    })
+}
+
+function searchPopup() {
+    const search = document.getElementById("input");
+    const close = document.getElementById("search-popup-close");
+
+    if (!search) {
+        return;
+    }
+    search.addEventListener("click", function () {
+        document.querySelector(".dark-bg").style.display = "block";
+        document.querySelector("body").style.overflow = "hidden";
+    })
+
+    close.addEventListener("click", function () {
+        document.querySelector(".dark-bg").style.display = "none";
+        document.querySelector("body").style.overflow = "auto";
+    })
+}
+
+function popUpNavBar() {
+    let lastScroll = 0;
+    const navBar = document.querySelector(".background");
+    window.addEventListener("scroll", function () {
+        let scrollTop = this.window.pageYOffset || this.document.documentElement.scrollTop;
+        if (scrollTop > lastScroll) {
+            navBar.style.top = "-150px";
+        } else {
+            navBar.style.top = "0";
+        }
+        lastScroll = scrollTop;
+    })
+
+}
+
+function displayShopAll() {
+    const itemsContainerElement = document.getElementById("shop-all");
+    if (!itemsContainerElement) {
+        return;
+    }
+    let innerHTML = '';
+    shopAll.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    itemsContainerElement.innerHTML = innerHTML;
+}
+
+function displayBottoms() {
+    const itemsContainerElement = document.querySelector("#bottom-imgs");
+    if (!itemsContainerElement) {
+        return;
+    }
+    let innerHTML = '';
+    maleBottoms.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    femaleBottoms.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    itemsContainerElement.innerHTML = innerHTML;
+
+}
+
+function displayCropTop() {
+    const itemsContainerElement = document.querySelector("#crop-top");
+    if (!itemsContainerElement) {
+        return;
+    }
+    let innerHTML = '';
+    cropTops.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    itemsContainerElement.innerHTML = innerHTML;
+}
+
+function displayEssential() {
+    const itemsContainerElement = document.querySelector("#essential");
+    if (!itemsContainerElement) {
+        return;
+    }
+    let innerHTML = '';
+    hoodies.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    itemsContainerElement.innerHTML = innerHTML;
+}
+
+function displayMen() {
+    const itemsContainerElement = document.querySelector("#men");
+    if (!itemsContainerElement) {
+        return;
+    }
+    let innerHTML = '';
+    tShirts.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    hoodies.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    maleBottoms.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    itemsContainerElement.innerHTML = innerHTML;
+}
+
+function displayPoloShirt() {
+    const itemsContainerElement = document.querySelector("#polo-shirts");
+    if (!itemsContainerElement) {
+        return;
+    }
+    let innerHTML = '';
+    poloTshirts.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    itemsContainerElement.innerHTML = innerHTML;
+}
+
+function displayRichCotton() {
+    const itemsContainerElement = document.querySelector("#rich");
+    if (!itemsContainerElement) {
+        return;
+    }
+    let innerHTML = '';
+    hoodies.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    itemsContainerElement.innerHTML = innerHTML;
+}
+
+function displayShirt() {
+    const itemsContainerElement = document.querySelector("#shirt");
+    if (!itemsContainerElement) {
+        return;
+    }
+    let innerHTML = '';
+    osTshirts.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    itemsContainerElement.innerHTML = innerHTML;
+}
+
+function displaySweatshirt() {
+    const itemsContainerElement = document.querySelector("#sweatshirt");
+    if (!itemsContainerElement) {
+        return;
+    }
+    let innerHTML = '';
+    maleSweatshirts.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    femaleSweatshirts.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    itemsContainerElement.innerHTML = innerHTML;
+}
+
+function displayTshirt() {
+    const itemsContainerElement = document.querySelector("#tshirt");
+    if (!itemsContainerElement) {
+        return;
+    }
+    let innerHTML = '';
+    tShirts.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    itemsContainerElement.innerHTML = innerHTML;
+}
+
+function displayWomen() {
+    const itemsContainerElement = document.querySelector("#women");
+    if (!itemsContainerElement) {
+        return;
+    }
+    let innerHTML = '';
+    cropTops.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    femaleBottoms.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    femaleSweatshirts.forEach(item => {
+        innerHTML += `<div class="product">
+        <img src="${item.item_img}" alt="">
+        <div class="content">
+            <h5>${item.item_name}</h5>
+            <h5>₹${item.price}</h5>
+            <button class="btn-add-cart" onclick="addToBag(${item.id})">Add to cart</button>
+        </div>
+    </div>`;
+    });
+    itemsContainerElement.innerHTML = innerHTML;
+}
