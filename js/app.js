@@ -1,6 +1,6 @@
 let bagItems;
 onLoad();
-
+console.log("hi I am yatish");
 function onLoad() {
     let bagItemsStr = localStorage.getItem('bagItems');
     bagItems = bagItemsStr ? JSON.parse(bagItemsStr) : [];
