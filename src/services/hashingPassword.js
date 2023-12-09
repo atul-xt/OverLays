@@ -2,9 +2,9 @@ const crypto = require('crypto');
 
 // Function to hash a password with salt using PBKDF2
 const hashPassword = (password, salt = crypto.randomBytes(16).toString('hex')) => {
-    const iterations = 10000; 
+    const iterations = 10000;
     const keylen = 64;
-    const digest = 'sha512'; 
+    const digest = 'sha512';
     const hashed = crypto.pbkdf2Sync(password, salt, iterations, keylen, digest).toString('hex');
     return { hashed, salt };
 };
