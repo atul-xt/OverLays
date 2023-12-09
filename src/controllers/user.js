@@ -26,6 +26,10 @@ async function userRegistration(req, res) {
 
         password = hashPassword(password, crypto.randomBytes(16).toString('hex'));
 
+        const exists = await userModel.findOne({ email: email });
+
+        if (exists) return res.status(400).json({ error: "User with this email already exists" });
+
         const newUser = await userModel.create({
             firstName,
             lastName,
@@ -33,15 +37,50 @@ async function userRegistration(req, res) {
             password,
         });
 
-        if (!newUser) return res.status(400).json({ error: "User with this email already exists" });
+        if (!newUser) return res.status(400).json({ error: "Error creating user" });
 
-        res.status(200).json({ data: newUser });
+        return res.status(200).json({ data: newUser });
 
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 }
 
+async function userLogin(req, res) {
+    try {
+        const { email, password } = req.body;
+        // console.log(email, password);
+        if (!email || !password) return res.status(422).send("Missing Field");
+
+        const user = await userModel.findOne({ email });
+        // console.log(user);
+        if (!user) return res.status(401).json({ error: "User Not Found" });
+
+        const result = verifyPassword(password, user.password.hashed, user.password.salt);
+
+        if (result) {
+            // Payload
+            const userData = {
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+            };
+            // Generate the token
+            const token = jwt.sign(userData, SECRET_KEY);
+            return res.status(200).json(token);
+        }
+        res.status(401).json({
+            error: 'Password mismatch'
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+}
 module.exports = {
     userRegistration,
+    userLogin,
 }

@@ -37,14 +37,14 @@ register.addEventListener('click', async () => {
         };
 
         const response = await fetch('http://localhost:3000/register', requestOptions);
-
+        console.log(response);
         if (!response.ok) {
             const responseData = await response.json();
 
             if (response.status === 400) {
                 if (responseData.error === "User with this email already exists") {
                     alert("User with this email already exists");
-                    emailRegister.value = "";
+                    email = emailRegister.value = "";
                     emailRegister.style.outline = "2px solid rgba(255, 0, 0, 0.8)"
                 } else {
                     // Display a more specific error message for other 400 Bad Request scenarios
@@ -60,6 +60,7 @@ register.addEventListener('click', async () => {
             const responseData = await response.json();
             // Handle successful response if needed
             console.log("Registration successful:", responseData);
+            window.location.href = 'login.html';
             alert("Registration successful!");
         }
     } catch (error) {

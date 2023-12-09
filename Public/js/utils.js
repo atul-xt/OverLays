@@ -92,8 +92,8 @@ function displayBagIcon() {
     const bagItemCountElement = document.querySelector('.bag-item-count');
     const cartDetails = document.querySelector('.cart-details');
     const checkout = document.querySelector('.checkout');
-    
-    if(!cartDetails){
+
+    if (!cartDetails) {
         return;
     }
     if (!bagItemCountElement) {
@@ -504,3 +504,4 @@ function displayWomen() {
     });
     itemsContainerElement.innerHTML = innerHTML;
 }
+
