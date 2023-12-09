@@ -1,6 +1,3 @@
-
-
-
 // api fetching work 
 
 const register = document.getElementById('register');
@@ -18,6 +15,9 @@ register.addEventListener('click', async () => {
     let email = emailRegister.value;
     let password = passwordRegister.value;
 
+    if (!firstName) return alert("Missing firstName");
+    if (!email) return alert("Missing email");
+    if (!password) return alert("Missing password");
 
     const userData = {
         firstName,
@@ -26,7 +26,6 @@ register.addEventListener('click', async () => {
         password
     };
 
-    console.log(userData);
 
     try {
         const requestOptions = {
@@ -45,8 +44,8 @@ register.addEventListener('click', async () => {
             if (response.status === 400) {
                 if (responseData.error === "User with this email already exists") {
                     alert("User with this email already exists");
-                    email = userEmail.value = "";
-                    userEmail.style.outline = "2px solid rgba(255, 0, 0, 0.8)"
+                    emailRegister.value = "";
+                    emailRegister.style.outline = "2px solid rgba(255, 0, 0, 0.8)"
                 } else {
                     // Display a more specific error message for other 400 Bad Request scenarios
                     alert(`Bad Request: ${responseData.error || "Invalid request"}`);
@@ -60,7 +59,6 @@ register.addEventListener('click', async () => {
             // Successful registration
             const responseData = await response.json();
             // Handle successful response if needed
-            container.classList.remove("right-panel-active");
             console.log("Registration successful:", responseData);
             alert("Registration successful!");
         }

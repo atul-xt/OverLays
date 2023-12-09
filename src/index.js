@@ -10,7 +10,7 @@ const userRouter = require("./routes/user")
 
 // MongoDb Connection 
 
-connectMongo(process.env.mongo_url+"OverlaysNew").then(() => console.log('Mongo Connected')).catch((err) => console.log('Mongo Error Occured', err));
+connectMongo(process.env.mongo_url + "OverlaysNew").then(() => console.log('Mongo Connected')).catch((err) => console.log('Mongo Error Occured', err));
 
 // middlewares 
 app.use(cors());

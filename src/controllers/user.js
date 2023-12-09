@@ -17,40 +17,31 @@ if (!SECRET_KEY) {
 }
 
 //defining a register function 
-async function userRegisteration(req, res) {
+async function userRegistration(req, res) {
     try {
         let { firstName, lastName, email, password } = req.body;
         console.log(firstName, lastName, email, password);
-        const validationErrors = [];
-        if (validator.isEmpty(firstName)) validationErrors.push({ msg: 'firstName cannot be blank.' });
-        if (!validator.isEmail(email)) validationErrors.push({ msg: 'Please enter a valid email address.' });
-        if (validator.isEmpty(password)) validationErrors.push({ msg: 'Password cannot be blank.' });
-        if (validationErrors.length) return res.sendStatus(400).json({ error: validationErrors });
-       
-        const existingUser = await userModel.findOne({ email: email });
-        if (existingUser) return res.status(400).json({ error: "User with this email already exists" });
-        
 
-        const hash = hashPassword(password, crypto.randomBytes(16).toString('hex'));
-    
+        if (!firstName || !email || !password) return res.status(422).json({ msg: "Missing Field" });
+
+        password = hashPassword(password, crypto.randomBytes(16).toString('hex'));
 
         const newUser = await userModel.create({
             firstName,
             lastName,
             email,
-            password: hash
+            password,
         });
 
-        res.status(200).json({
-            msg: "Registration Successfull !",
-            data: newUser
-        });
+        if (!newUser) return res.status(400).json({ error: "User with this email already exists" });
+
+        res.status(200).json({ data: newUser });
 
     } catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 }
 
-module.exports={
-    userRegisteration,
+module.exports = {
+    userRegistration,
 }
