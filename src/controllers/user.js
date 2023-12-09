@@ -1,5 +1,5 @@
 const userModel = require('../models/user');
-const otpModel = require('../models/otp');
+// const otpModel = require('../models/otp');
 const evn = require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -24,7 +24,8 @@ async function userRegisteration(req, res) {
         if (validator.isEmpty(firstName)) validationErrors.push({ msg: 'firstName cannot be blank.' });
         if (!validator.isEmail(email)) validationErrors.push({ msg: 'Please enter a valid email address.' });
         if (validator.isEmpty(password)) validationErrors.push({ msg: 'Password cannot be blank.' });
-
+        if (validationErrors.length) return res.sendStatus(401).json({ error: validationErrors });
+        
         const existingUser = await User.findOne({ email: email });
         if (!existingUser) return res.status(400).json({ error: "User with this email already exists" });
 
@@ -46,4 +47,8 @@ async function userRegisteration(req, res) {
     } catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
     }
+}
+
+module.exports={
+    userRegisteration,
 }

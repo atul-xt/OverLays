@@ -6,7 +6,7 @@ const cors = require('cors');
 const port = process.env.PORT || 3000;
 
 // Routes Access
-
+const userRouter = require("./routes/user")
 
 // MongoDb Connection 
 
@@ -20,6 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.use('/', userRouter);
 
 
 app.use(express.static('../Public'));

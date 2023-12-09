@@ -36,22 +36,18 @@
             </div>
         </nav>
         <div class="space"></div>
-        <!-- <form action="index.html"> -->
-        <form action="/user/signup" method="post">
             <div class="login-form">
                 <h1>Register</h1>
                 <p>Please fill in the fields below:</p>
-                <input id="first-name" type="text" placeholder="FirstName" name="firstName">
-                <input id="last-name" type="text" placeholder="LastName" name="lastName">
-                <input id="login-email" type="text" placeholder="E-mail" name="email">
+                <input id="first-name" type="text" placeholder="FirstName" name="firstNameRegister">
+                <input id="last-name" type="text" placeholder="LastName" name="lastNameRegister">
+                <input id="login-email" type="text" placeholder="E-mail" name="emailRegister">
                 <div class="pass">
-                    <input id="login-pass" type="password" placeholder="Password" name="password">
-                    <!-- <a href="#">Forgot password?</a> -->
+                    <input id="login-pass" type="password" placeholder="Password" name="passwordRegister">
                 </div>
-                <button type = "login" >Create Account</button> 
+                <button type = "login" id="register">Create Account</button> 
                 <p>Already have an account? <a href="login.html"> Login</a></p>
             </div>
-        </form>
         <div class="contact">
             <div class="delivery">
                 <img src="./media/delivery.webp" alt="">
@@ -279,6 +275,8 @@
         </div>
     </div>
     
+    <script src="./js/app.js"></script>
+    <script src="./js/items.js"></script>
     <script src="./js/utils.js"></script>
     <script src="./js/bag.js"></script>
 </body>
