@@ -505,3 +505,156 @@ function displayWomen() {
     itemsContainerElement.innerHTML = innerHTML;
 }
 
+
+// purchase Api Calling
+const purchasebutton = document.querySelector('#purchase-button');
+const FullName = document.querySelector('#FullName');
+const FullAddress = document.querySelector('#FullAddress');
+const Address2 = document.querySelector('#Address2');
+const MobileNumber = document.querySelector('#MobileNumber');
+const Pincode = document.querySelector('#Pincode');
+const City = document.querySelector('#City');
+const State = document.querySelector('#State');
+const semail = document.querySelector('#s-email');
+const cashOnDelevery = document.querySelector('#cod');
+const online = document.querySelector('#online');
+purchasebutton.addEventListener('click', async () => {
+    let fullName = FullName.value;
+    let address1 = FullAddress.value;
+    let address2 = Address2.value;
+    let mobileNumber = MobileNumber.value;
+    let pincode = Pincode.value;
+    let city = City.value;
+    let state = State.value;
+    let email = semail.value;
+    let paymentType;
+    let cash = cashOnDelevery.value;
+    let paymentOnline = online.value;
+
+    FullName.style.outline = "none";
+    FullAddress.style.outline = "none";
+    Address2.style.outline = "none";
+    MobileNumber.style.outline = "none";
+    Pincode.style.outline = "none";
+    City.style.outline = "none";
+    State.style.outline = "none";
+    semail.style.outline = "none";
+
+    if (!fullName) {
+        FullName.value = ""
+        FullName.style.outline = "2px solid red";
+        return alert('Missing FullName');
+    }
+    if (!address1) {
+        FullAddress.value = ""
+        FullAddress.style.outline = "2px solid red";
+        return alert('Missing Full-Address');
+    }
+    if (!address2) {
+        Address2.value = ""
+        Address2.style.outline = "2px solid red";
+        return alert('Missing Address-2');
+    }
+    if (!mobileNumber) {
+        MobileNumber.value = ""
+        MobileNumber.style.outline = "2px solid red";
+        return alert('Missing MobileNumber');
+    }
+    if (!pincode) {
+        Pincode.value = ""
+        Pincode.style.outline = "2px solid red";
+        return alert('Missing Pincode');
+    }
+    if (!city) {
+        City.value = ""
+        City.style.outline = "2px solid red";
+        return alert('Missing City');
+    }
+    if (!state) {
+        State.value = ""
+        State.style.outline = "2px solid red";
+        return alert('Missing State');
+    }
+    if (!email) {
+        semail.value = ""
+        semail.style.outline = "2px solid red";
+        return alert('Missing Email');
+    }
+    if (!paymentOnline && cashOnDelevery) {
+        return paymentType = cashOnDelevery
+    }
+    if (!cashOnDelevery && paymentOnline) {
+        return paymentType = paymentOnline;
+
+    }
+    // if (cashOnDelevery && paymentOnline) {
+    //     return alert('Can not select Both Options');
+
+    // }
+    // if (!cashOnDelevery && !paymentOnline) {
+    //     return alert('Please select Payement option');
+    // }
+
+    const Data = {
+        productDetails: bagItemObjects,
+        shippingDetails: {
+            fullName,
+            address1,
+            address2,
+            mobileNumber,
+            pincode,
+            city,
+            state,
+            email,
+            paymentType
+        }
+    };
+    // console.log(Data);
+    const jwttoken = localStorage.getItem('jwtToken');
+    try {
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                authorization: `Bearer ${jwttoken}`
+            },
+            body: JSON.stringify({
+                // user: {}, // Your user data
+                productDetails: bagItemObjects,
+                shippingDetails: {
+                    fullName,
+                    address1,
+                    address2,
+                    mobileNumber,
+                    pincode,
+                    city,
+                    state,
+                    email,
+                    paymentType
+                }
+            }),
+        };
+
+        const response = await fetch('http://localhost:3000/shipping/makeOrder', requestOptions);
+
+        if (!response.ok) {
+            const responseData = await response.json();
+            console.log(response);
+            if (response.status === 422 && responseData.error === "Missing Field") {
+                alert("Backend Not get data")
+            } else if (response.status === 400 && responseData.error === "Error creating user") {
+                alert('Purchase Failed : data not saving in backend');
+            } else {
+                // Display a generic error message for other server errors
+                alert("Purchase failed. Please try again later.");
+            }
+        } else {
+            const responseData = await response.json();
+            alert('Product Puchased Successfully');
+            console.log(responseData);
+        }
+    } catch (error) {
+        // Handle other types of errors (e.g., network issues)
+        console.error('Fetch error:', error);
+        alert("Login failed. Please check your internet connection and try again.");
+    }
+})

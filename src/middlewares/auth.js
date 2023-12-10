@@ -5,8 +5,10 @@ const { login } = require('../controllers/user');
 const secretKey = process.env.SECRET_KEY;
 
 const authecticateUser = (req, res, next) => {
+    console.log(req.body);
     let token = req.headers.authorization;
 
+    // console.log(req.headers);
     if (!token) {
         return res.status(401).json({ error: 'Unauthorized - No token provided' });
     }
@@ -16,7 +18,9 @@ const authecticateUser = (req, res, next) => {
         if (err) {
             return res.status(401).json({ error: 'Unauthorized - Invalid token' });
         }
-        req.user = decoded;
+        // console.log(decoded);
+        req.body.user = decoded;
+        console.log(req);
         next();
     })
 }

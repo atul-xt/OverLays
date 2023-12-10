@@ -8,7 +8,6 @@ const validator = require('validator');
 
 const SECRET_KEY = process.env.SECRET_KEY;
 const { hashPassword, verifyPassword } = require('../services/hashingPassword');
-const { log } = require('console');
 
 
 if (!SECRET_KEY) {

@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
+const shippingSchema = new mongoose.Schema({
     user: {
+        _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user'
+        },
         firstName: {
             type: String,
             required: true,
@@ -10,15 +14,11 @@ const userSchema = new mongoose.Schema({
             type: String,
         }
     },
-    productName: {
-        type: String,
-        required: true,
-    },
-    productPrice: {
-        type: String,
+    productDetails: {
+        type: Array,
         required: true
     },
-    shippingAddress: {
+    shippingDetails: {
         address1: {
             type: String,
             required: true
@@ -46,12 +46,12 @@ const userSchema = new mongoose.Schema({
         email: {
             type: String,
             required: true
+        },
+        paymentType: {
+            type: String,
+            required: true,
         }
     },
-    paymentType: {
-        type: String,
-        required: true,
-    }
 });
-const user = mongoose.model('user', userSchema)
-module.exports = user;
+const shipping = mongoose.model('shipping', shippingSchema)
+module.exports = shipping;
