@@ -576,7 +576,7 @@ purchasebutton.addEventListener('click', async () => {
         semail.style.outline = "2px solid red";
         return alert('Missing Email');
     }
-   
+
 
 
     const Data = {
@@ -637,8 +637,16 @@ purchasebutton.addEventListener('click', async () => {
             }
         } else {
             const responseData = await response.json();
+            FullName.value = ""
+            FullAddress.value = ""
+            Address2.value = ""
+            MobileNumber.value = ""
+            Pincode.value = ""
+            City.value = ""
+            State.value = ""
+            semail.value = ""
             alert('Product Puchased Successfully');
-            console.log(responseData);
+            window.location.href = 'index.html'
         }
     } catch (error) {
         // Handle other types of errors (e.g., network issues)
