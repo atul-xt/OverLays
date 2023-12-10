@@ -612,6 +612,7 @@ purchasebutton.addEventListener('click', async () => {
     // console.log(Data);
     const jwttoken = localStorage.getItem('jwtToken');
     try {
+        console.log(bagItemObjects);
         const requestOptions = {
             method: "POST",
             headers: {
