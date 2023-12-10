@@ -616,10 +616,10 @@ purchasebutton.addEventListener('click', async () => {
         const requestOptions = {
             method: "POST",
             headers: {
+                'Content-Type': 'application/json',
                 authorization: `Bearer ${jwttoken}`
             },
             body: JSON.stringify({
-                // user: {}, // Your user data
                 productDetails: bagItemObjects,
                 shippingDetails: {
                     fullName,
@@ -634,12 +634,12 @@ purchasebutton.addEventListener('click', async () => {
                 }
             }),
         };
-
+        
         const response = await fetch('http://localhost:3000/shipping/makeOrder', requestOptions);
 
         if (!response.ok) {
+            
             const responseData = await response.json();
-            console.log(response);
             if (response.status === 422 && responseData.error === "Missing Field") {
                 alert("Backend Not get data")
             } else if (response.status === 400 && responseData.error === "Error creating user") {
