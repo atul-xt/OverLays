@@ -516,8 +516,7 @@ const Pincode = document.querySelector('#Pincode');
 const City = document.querySelector('#City');
 const State = document.querySelector('#State');
 const semail = document.querySelector('#s-email');
-const cashOnDelevery = document.querySelector('#cod');
-const online = document.querySelector('#online');
+
 purchasebutton.addEventListener('click', async () => {
     let fullName = FullName.value;
     let address1 = FullAddress.value;
@@ -527,9 +526,6 @@ purchasebutton.addEventListener('click', async () => {
     let city = City.value;
     let state = State.value;
     let email = semail.value;
-    let paymentType;
-    let cash = cashOnDelevery.value;
-    let paymentOnline = online.value;
 
     FullName.style.outline = "none";
     FullAddress.style.outline = "none";
@@ -580,20 +576,8 @@ purchasebutton.addEventListener('click', async () => {
         semail.style.outline = "2px solid red";
         return alert('Missing Email');
     }
-    if (!paymentOnline && cashOnDelevery) {
-        return paymentType = cashOnDelevery
-    }
-    if (!cashOnDelevery && paymentOnline) {
-        return paymentType = paymentOnline;
+   
 
-    }
-    // if (cashOnDelevery && paymentOnline) {
-    //     return alert('Can not select Both Options');
-
-    // }
-    // if (!cashOnDelevery && !paymentOnline) {
-    //     return alert('Please select Payement option');
-    // }
 
     const Data = {
         productDetails: bagItemObjects,
@@ -605,12 +589,16 @@ purchasebutton.addEventListener('click', async () => {
             pincode,
             city,
             state,
-            email,
-            paymentType
+            email
         }
     };
     // console.log(Data);
     const jwttoken = localStorage.getItem('jwtToken');
+
+    if (!jwttoken) {
+        alert("Your Are Not Login ! Please login first")
+        return window.location.href = "login.html";
+    }
     try {
         console.log(bagItemObjects);
         const requestOptions = {
@@ -629,12 +617,11 @@ purchasebutton.addEventListener('click', async () => {
                     pincode,
                     city,
                     state,
-                    email,
-                    paymentType
+                    email
                 }
             }),
         };
-        
+
         const response = await fetch('http://localhost:3000/shipping/makeOrder', requestOptions);
 
         if (!response.ok) {
