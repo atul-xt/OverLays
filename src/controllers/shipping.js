@@ -8,11 +8,12 @@ async function makeOrder(req, res) {
         if (!user || !productDetails || !shippingDetails) return res.status(422).json({ error: "Missing Field" });
       
 
-        const newOrder =  shippingModel.create({
-            ...user,
+        const newOrder = await shippingModel.create({
+            user,
             productDetails,
-            ...shippingDetails
+            shippingDetails
         })
+        console.log(newOrder+" new order");
 
         if (!newOrder) return res.status(400).json({ error: "Error creating user" });
 

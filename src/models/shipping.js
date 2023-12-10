@@ -27,7 +27,7 @@ const shippingSchema = new mongoose.Schema({
             type: String,
             required: true
         },
-        mobile: {
+        mobileNumber: {
             type: String,
             required: true
         },
@@ -50,6 +50,7 @@ const shippingSchema = new mongoose.Schema({
         paymentType: {
             type: String,
             required: true,
+            default:"COD"
         }
     },
 });

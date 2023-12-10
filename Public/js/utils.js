@@ -637,7 +637,7 @@ purchasebutton.addEventListener('click', async () => {
         const response = await fetch('http://localhost:3000/shipping/makeOrder', requestOptions);
 
         if (!response.ok) {
-            
+            console.log(requestOptions.body);
             const responseData = await response.json();
             if (response.status === 422 && responseData.error === "Missing Field") {
                 alert("Backend Not get data")
